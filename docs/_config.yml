@@ -23,7 +23,7 @@ description: >- # this means to ignore newlines until "baseurl:"
   conversion script install guide
   wcs.trans
 baseurl: "/Naver-Eng-doc" # the subpath of your site, e.g. /blog
-url: "https://Spark-Sharing.github.io/Naver-Eng-doc/ " # the base hostname & protocol for your site, e.g. http://example.com
+url: "https://Spark-Sharing.github.io" # the base hostname & protocol for your site, e.g. http://example.com
 github_username: NAVER-ConversionTracking
 
 # Build settings

@@ -1,0 +1,430 @@
+---
+title: NAVER Conversion Script Assistant Guide
+layout: post
+lesson: 6
+---
+------
+
+Let's practice various callouts.
+
+
+
+```
+> ##### TIP
+> Content section
+{: .block-tip }
+
+> ##### WARNING
+> Content section
+{: .block-warning }
+
+> ##### DANGER
+> Content section
+{: .block-danger }
+
+
+> ##### TIP : Title Title Title
+> Content section
+{: .block-tip }
+
+
+> ##### This is a warning
+> Content section
+{: .block-warning }
+
+```
+
+> ##### TIP
+> Content section
+{: .block-tip }
+
+> ##### WARNING
+> Content section
+{: .block-warning }
+
+> ##### DANGER
+> Content section
+{: .block-danger }
+
+
+> ##### TIP : Title Title Title
+> Content section
+{: .block-tip }
+
+
+> ##### This is a warning
+> Content section
+{: .block-warning }
+
+
+
+# 1. Overview
+## 1.1. Target Services and Purpose
+
+Advertisers install the NAVER Ads conversion tracking script on their own sites in order to use NAVER Search Ad (SA) Premium Log Analysis and NAVER Performance Display Ad (GFA) conversion tracking services. <br>
+This document provides a guide for `NAVER Conversion Script Assistant` (hereafter `Assistant`), a Chrome extension developed by NAVER to make it easy to check whether the NAVER Ads conversion tracking script installed on a site has been installed and is operating correctly.<br>
+
+> ##### WARNING
+> This `Assistant` supports only the new version of the NAVER Ads conversion script (wcs.trans version).<br>
+It does not support the old version (wcs.cnv version).
+{: .block-warning }
+
+[1. Overview](#1-overview) (anchor only) <br>
+[4. FAQ](#4-faq) anchor only <br>
+
+[4. FAQ](#4-faq) anchor only <br>
+[4. FAQ]({{"/pages/06_script_assistant_guide/#4-faq"| relative_url}}) full URI<br>
+[1. Overview](#1-overview) (anchor only) <br>
+[1. Overview]({{"/pages/06_script_assistant_guide/#1-overview"| relative_url}}) (linked with full URI) <br>
+[3. Detailed Assistant Feature Guide](#3-detailed-assistant-feature-guide) <br>
+
+[4. FAQ]({{"/pages/06_script_assistant_guide/#4-faq"| relative_url}}) full URI<br>
+
+> ##### WARNING
+> `NAVER Conversion Script Assistant` is a Chrome extension and works properly in the Chrome browser. (It has not been adequately tested in browsers other than Chrome.)<br>
+> We strongly recommend using Chrome when using this `Assistant`.
+{: .block-warning }
+
+
+## 1.2. How to Install `Assistant`
+
+(1) Prepare the **Chrome browser**. <br>
+<u>(2) Go to the Chrome Web Store (https://chromewebstore.google.com/).</u> <br>
+[(3) Search for `NAVER Conversion Script Assistant`, then select the program from the search results.]{:style="text-decoration:underline"} <br>
+<span style="text-decoration: underline;">(4) On the app detail screen, click the `Add to Chrome` button in the upper right.<span> <br>
+
+> ##### WARNING
+> `NAVER Conversion Script Assistant` is a Chrome extension and works properly in the Chrome browser. (It has not been adequately tested in browsers other than Chrome.)<br>
+> We strongly recommend using Chrome when using this `Assistant`.
+{: .block-warning }
+
+## 1.3. How to Use `Assistant`
+
+<span style="color: red">(1) Open a new browser window.</span>  <br>
+[(2) Open the `Assistant` app.]{: style="color: green" }  <br>
+(3) Click an ad and enter the site. <br>
+If you have applied for the conversion tracking service in the ad platform and the ad script is installed on the site, you can check that logs, cookies (※), and NaPm information are shown in the `Assistant` screen, and that a page view (PV: Page View) log occurs. <br>
+(4) When you perform an action that generates a conversion event on the site (for example, adding to cart), the generated log is recorded in `Assistant`. <br>
+(5) When you move from the current page to another page, the content shown in the app disappears, and information such as logs generated on the new page / existing cookies is shown. <br>
+
+※ [Reference] Cookies <br>
+ . If you clicked NAVER Search Ad (SA) and entered the site, the `Cookies` section of the `Assistant` screen must contain at least 3 cookies: `NA_SA`, `NVADID`, and `NA_CO`. <br>
+ . If you clicked NAVER Performance Display Ad (GFA) and entered the site, the `Cookies` section of the `Assistant` screen must contain at least 3 cookies: `NA_DA`, `NVADID`, and `NA_CO`. <br>
+ . If you clicked both NAVER Search Ad and NAVER Performance Display Ad, the `Cookies` section must contain a total of 4 cookies, the union of the cookies mentioned above: `NA_SA`, `NA_DA`, `NVADID`, and `NA_CO`. <br>
+
+> ##### TIP
+> Logs are shown only by window/tab. (Content generated in other tabs or other windows is not shown. If a new window opens after clicking a specific link, `Assistant` only shows content generated in the window/tab where the app is open.)  <br>
+> Even if you do not open `Assistant` in advance, after installing `Assistant`, you can open `Assistant` after opening a page and still review the logs generated on that page.  <br>
+> Logs/information shown in `Assistant` are reset when the page changes, and information generated on the new page is shown. (If logs are generated by a button click while the page URL does not change, the screen is not reset and logs continue to accumulate.) <br>
+> When sending conversion logs after a new script installation, run a test (ad click & conversion generation), download the file through the download feature in `Assistant`, and send that file as-is.
+{: .block-tip }
+
+<br>
+  
+> ##### TIP
+> When requesting conversion review from NHN Data, please send test result files for the `purchase` and `sign_up` conversion event types.  <br>
+For sites without `bank transfer` and sites where `purchase` tests are difficult, and for sites where `sign_up` requires mobile phone authentication, SNS authentication sign-up, a business registration number, etc., conversion review testing can be difficult. <br>
+After installing the NAVER Ads conversion script, for `purchase` and `sign_up` conversions like the above, run `Assistant`, perform the conversion test yourself, download the file, and send it to us. <br>
+ <br>
+※ Conversion test & file delivery method <br>
+&nbsp;  . Install `NAVER Conversion Script Assistant` & run the app <br>
+&nbsp;  . Click the ad & enter the site <br>
+&nbsp;  . Proceed with sign-up (`sign_up`) & click the `Download All` button in the upper right of the `Assistant` screen and download the file <br>
+&nbsp;  . Proceed with purchase (`purchase`) & click the `Download All` button in the upper right of the `Assistant` screen and download the file <br>
+&nbsp;  . Send each downloaded file to NHN Data (Channel Talk/chat consultation: https://navercts.channel.io/home, public email: navercts@nhndata.com) <br>
+{: .block-tip }
+
+
+## 1.4. Example of How to Use `Assistant`
+
+(1) Open a new browser window.
+
+(2) Open the `Assistant` app. <br>
+ . Click the app list button in the upper right of the browser. <br>
+ . In the list, click the Pin icon for the `NAVER Conversion Script Assistant` app. <br>
+ . Click the N icon that appears in the upper right. <br>
+ . The `Assistant` app opens. <br>
+ <br>
+![06_14_manual_example_01.png]({{"/assets/img/06_14_manual_example_01.png"| relative_url}})
+
+
+(3) Find and click the ad you want to use for conversion testing.
+
+![06_14_manual_example_02.png]({{"/assets/img/06_14_manual_example_02.png"| relative_url}}){:width="600"}
+
+※ Note <br>
+If a new window opens after clicking the ad, click the `N icon` in the upper right of the newly opened browser window to open the `Assistant` app. <br>
+When you open the app, you can check the logs and related information generated when that window opened, before the app was opened.
+
+![06_14_manual_example_03.png]({{"/assets/img/06_14_manual_example_03.png"| relative_url}}){:width="600"}
+
+(4) When you land on the site, check whether logs occur, cookies are created, page view (PV) occurs, and NAVER parameters occur.
+
+(4-1) In a normal case, the following information is shown in the `Assistant` app.
+ 
+ ▶ Top section <br>
+ . Site ID: `1`  <br>
+ . Logs: `1` or `2`  <br>
+ . NAVER ad cookies: `3` or `4`  <br>
+ . NAVER parameter: `Occurred` <br>
+
+![06_14_manual_example_04.png]({{"/assets/img/06_14_manual_example_04.png"| relative_url}}){:width="600"}
+ 
+▶ Each information pane <br>
+ . In the `Page Generated Logs` section, one `Page View (PV)` log occurs. Depending on the case, one `Conversion` log may also occur. (If it is a product detail page, a `view_product` conversion may occur.) A green icon appears to the right of the log name. <br>
+ . In the `NAVER Ad Cookies` section, you can see 3 or 4 cookies. (`NA_CO` and `NVADID` are always created. `NA_SA` is created for Search Ad, and `NA_DA` is created for Performance Display Ad.) <br>
+ . In the `NAVER Parameters` section, NaPm information is shown, and the parameter `ci` and `tr` values are visible in the table. <br>
+
+![06_14_manual_example_05.png]({{"/assets/img/06_14_manual_example_05.png"| relative_url}}){:width="600"} <br>
+
+You may also see 2 logs as follows. (If the landing page after clicking the ad is a product detail page, 2 logs may occur.)  <br>
+![06_14_manual_example_06.png]({{"/assets/img/06_14_manual_example_06.png"| relative_url}}){:width="600"}
+
+
+(4-2) In abnormal cases, some of the following may appear.
+
+(a) The site ID count is 0, the value is unknown, or the count is 2 or more. <br>
+ . In general, one site ID is appropriate. If you also use NAVER Analytics, up to two may be possible.  <br>
+ . If the site ID count is 0, the script may not be installed. <br>
+ . The site ID count may be 2 (if the NAVER Analytics script is installed together with the ad conversion script), but if it is more than 2, you should check whether that was intended. <br>
+ . It is very rare for 3 or more site IDs to be normal. You need to check whether the script is installed correctly. <br>
+ <br>
+(b) The generated log count is 0 or 3 or more. <br>
+ . Expected causes when the generated log count is 0 <br>
+ . (Expected causes) Key parts of the script are missing. There is a typo in the script. The script is located somewhere it does not run even when the page opens. Check for and resolve these issues. <br>
+ . Expected causes when the generated log count is 3 or more <br>
+ . (Expected causes) The script is running multiple times because of a loop statement, etc. Multiple copies of the script are installed. (Example: another page is imported, and that page also contains the ad conversion script.) <br>
+ <br>
+(c) The icon to the right of the log name is yellow or red. <br>
+ . This means there is a problem with some details of the log. <br>
+ . At the far right of the log shown in the table, there is a `Details` button. Click this button and review the screen that appears, where warning/error judgment results are displayed for each item. <br>
+ (Warnings/errors usually appear where values are dynamically set as variables in the script. Please check whether the variables are set correctly and whether the data types are correct.) <br>
+ <br>
+(d) Even though you clicked an ad, the NAVER ad cookie count is 0 or 2 or fewer. <br>
+ . The clicked item was not actually an ad. <br>
+ . The clicked ad is connected to a business channel that has not applied for ad conversion tracking (or Premium Log Analysis). <br>
+ . After the ad click, the NaPm parameter that NAVER media appends to the ad Link_URL disappeared while the site redirected, or it was decoded/encoded during redirect. <br>
+ <br>
+(e) Even though you clicked an ad and entered the site, the NAVER parameter is `Not occurred`. <br>
+ . After the ad click, the NaPm parameter that NAVER media appends to the ad Link_URL disappeared while the site redirected. <br>
+ <br>
+▶ Example of the `Assistant` screen in an abnormal case <br>
+ . The number of site IDs is abnormally high at 3. (Usually 1.) <br>
+ . The number of generated logs is abnormally high. (Usually 1, or 2 total when including Page View (PV) + conversion log.) <br>
+ . The number of NAVER ad cookies is abnormally low. (Usually 2, 3, 4, or 0. A count of 1 does not occur.) <br>
+
+![06_14_manual_example_07.png]({{"/assets/img/06_14_manual_example_07.png"| relative_url}}){:width="600"}
+
+
+(5) If it is an e-commerce site, proceed with processes such as add to cart and purchase completion. <br>
+(Or, while using the site, move to a page where a conversion event is embedded or click a button that generates a conversion event.) <br>
+ <br>
+(5-1) In a normal case, the `Assistant` app displays as follows. <br>
+(Example where a purchase completion (`purchase`) conversion log occurs on the purchase completion page.) <br>
+ <br>
+ . 1 site ID <br>
+. 2 logs (Page Generated Logs: 1 Page View (PV), 1 conversion (`purchase`)); the icon to the right of the log name is a green check icon <br>
+. NAVER ad cookies: 3 (`NA_SA`, `NVADID`, `NA_CO`) (or 4 including `NA_DA`) <br>
+. NAVER parameter: Not occurred (Because the purchase completion page is generally not used as the ad landing page, the purchase completion page is usually `Not occurred`.) <br>
+ <br>
+▶ Example of the `Assistant` screen in a normal case <br>
+![06_14_manual_example_08.png]({{"/assets/img/06_14_manual_example_08.png"| relative_url}}){:width="600"}
+ <br>
+ <br>
+(5-2) In abnormal cases or cases with errors, some of the following symptoms may occur. <br>
+ <br>
+ . The site ID count is 0 or 2 or more.  <br>
+ . The generated log count is 0 or 3 or more. <br>
+ . The NAVER ad cookie count is 0, 2 or fewer, or 5 or more. <br>
+ . In the Page Generated Logs section, the icon to the right of the log name is yellow or red. <br>
+=> Refer to (a) through (e) in (4-2) above to identify the cause of the problem. <br>
+ <br>
+▶ Example of the `Assistant` screen in an abnormal case <br>
+![06_14_manual_example_09.png]({{"/assets/img/06_14_manual_example_09.png"| relative_url}}){:width="1250"}
+ <br>
+
+
+
+# 2. Conversion Tracking Service Flow and Assistant Feature Overview
+The overall flow for conversion tracking is as follows. <br>
+ <br>
+(a) NAVER media (click)  <br>
+➜ (b) Landing on the landing page with the NaPm parameter & cookie creation  <br>
+➜ (c) Conversion log occurs when the conversion action occurs & is sent to the NAVER collection server  <br>
+➜ (d) NAVER internal processing & conversion report provided <br>
+
+For this sequence of conversion tracking to proceed normally, the advertiser site must have the `NAVER Ads conversion tracking script` installed.
+
+ `NAVER Conversion Script Assistant` helps you easily determine whether the NAVER Ads conversion tracking script has been installed correctly by showing: <br>
+&nbsp;   . whether the NaPm parameter existed on the landing page in (b), and whether the cookies required for conversion tracking were created <br>
+&nbsp;   . whether a conversion log occurs when a conversion action occurs in (c), and whether the generated conversion log is structured according to the specification <br>
+  
+# 3. Detailed `Assistant` Feature Guide
+
+For conversion tracking settings (ad settings and script installation) to be completed correctly,<br>
+the following items are required or must operate normally during the process from ad click to ad report generation. <br>
+
+### ▶ Required Elements for Correct Conversion Report Generation
+(1) When an ad is clicked, the NaPm parameter issued by NAVER media must be delivered to the site landing page. <br>
+(2) The cookies required for ad conversion tracking must be created normally on the landing page. <br>
+(3) On pages that are not conversion pages, a page view (PV) log must occur. <br>
+(4) If a page with a conversion script installed opens and a conversion event occurs, or if a conversion event occurs by button click, a conversion log must occur at the time of the event, and the information inserted into the script must be included in the conversion log normally according to the specification.
+
+Through `Assistant`, you can review all information corresponding to (1) through (4) above.
+
+### ▶ Brief Explanation of the `Assistant` Screen
+
+![06_sag_001.png]({{"/assets/img/06_sag_001.png"| relative_url}})
+
+① Result Summary <br>
+&nbsp;  . Summarizes and shows the number of site IDs, logs, cookies, and whether a NAVER parameter occurred in this app.
+
+② Page Generated Logs <br>
+Shows various information about logs generated on the current page. <br>
+&nbsp;  . Site ID, log count <br>
+&nbsp;  . Log validation result (normal, warning, error) <br>
+&nbsp;  . Current page URL and Referer <br>
+&nbsp;  . List of generated logs (Page View (PV) and conversion) and their details (visible after clicking Details) <br>
+➜ Shows the Page View (PV) log in required element (3) and the conversion log in required element (4).
+
+③ NAVER Ad Cookies <br>
+&nbsp;  . Among the various cookies required for ad conversion tracking, this shows cookies containing information about contributing ads. <br>
+➜ Shows cookie-related content for required element (2).
+
+④ NAVER Parameters <br>
+&nbsp;  . Shows the parameter (NaPm) issued by NAVER media for ad conversion tracking. <br>
+➜ Shows the NaPm parameter content for required element (1).
+
+⑤ Guide <br>
+&nbsp;  . Script Installation Guide: a link to the guide related to scripts that must be installed on the site to use the NAVER Ads conversion tracking service.  <br>
+&nbsp;  . Assistant Guide: a link to the NAVER Conversion Script Assistant guide.
+
+⑥ Download All <br>
+&nbsp;  . Downloads all NAVER Ads conversion tracking-related information held by this `Assistant` as a single file.
+ 
+The `Assistant` screen is explained in more detail in the next chapter.
+
+## 3.1. ① Result Summary Section
+① Result Summary <br>
+Shows an overall view of the counts or occurrence status of elements required for NAVER Ads conversion tracking.
+
+Page Generated Logs <br>
+&nbsp;  . Site ID: site-specific identifier issued by NAVER <br>
+&nbsp;  . Logs: total number of Page View (PV) logs and conversion logs generated on the current page
+
+NAVER Ad Cookies <br>
+&nbsp;  . Among the cookies required for NAVER ad tracking, this shows cookies containing information about contributing ads. Up to 4 are shown.
+
+NAVER Parameters <br>
+&nbsp;  . Shows the parameter (NaPm) issued by NAVER media for ad conversion tracking. If the current page has a NaPm parameter, it shows `Occurred`; if not, it shows `Not occurred`.
+
+⑥ Download All <br>
+&nbsp;  . Downloads all NAVER Ads conversion tracking-related information held by this `Assistant` as a single file. <br>
+&nbsp;  . Downloads all content as a single file: result summary, page generated logs (including the details of each individual log), NAVER ad cookies, and NAVER parameters. <br>
+&nbsp;  . This is useful when you need to pass all generated and accessible conversion tracking information from the current page to someone else at once.
+ 
+## 3.2. ② Page Generated Logs Section
+Shows NAVER Ads conversion tracking-related logs generated on the current page.
+
+### 3.2.1. Top
+ . Site ID / Logs <br>
+&nbsp;    . Site ID: number of site identifiers issued by NAVER (also called the `NAVER common key`). If multiple scripts are installed on the site, 2 or more site IDs may appear. <br>
+&nbsp;    . Logs: total number of Page View (PV) logs and conversion logs generated on the current page <br>
+ . Site ID (normal/warning/error): displays counts by validation result for all site IDs found in logs generated on the current page. <br>
+ . Logs (normal/warning/error): displays counts by validation result for Page View (PV) logs and conversion logs generated on the current page. <br>
+ . URL: the current page URL. <br>
+ . Referer: the Referer URL for the current page (generally the previous page).
+ 
+### 3.2.2. Bottom
+. Table showing logs (Page View (PV), conversion) by site ID <br>
+&nbsp;  . (First row of the table) Site ID (also called the `NAVER common key`)
+&nbsp;  . The number on the left of each log shows the log occurrence time. <br>
+&nbsp;  . Click the `Details` button to the right of a log in the list to see detailed information and validation results for that log.
+ 
+#### 3.2.2.1. Page View (PV) Details
+You can view detailed information about one specific Page View (PV) log.
+
+![06_sag_002.png]({{"/assets/img/06_sag_002.png"| relative_url}})
+
+① Top of Details <br>
+&nbsp;  . Displays the site ID, log occurrence time, and log type. <br>
+&nbsp;  . If the log has any `error`, it displays `error`. <br>
+&nbsp;  . If the log has no errors and only `warnings`, it displays `warning`. <br>
+&nbsp;  . If the log has no `errors` or `warnings`, it displays normal. <br>
+&nbsp;&nbsp;  (If `warning` and `error` are mixed, it displays `error`.)
+
+② Sent Items (General) <br>
+&nbsp;  . Shows the general items sent in the Page View (PV) log.
+
+③ NAVER Ad Cookies <br>
+&nbsp;  . Shows NAVER ad conversion-related cookies accessible from the current page.
+
+④ File Download <br>
+&nbsp;  . A feature for downloading the current log information as a file.  <br>
+&nbsp;  . Useful when sharing the current log situation with someone else.
+
+
+#### 3.2.2.2. Conversion Details
+You can view detailed information about one specific conversion log.
+
+![06_sag_003.png]({{"/assets/img/06_sag_003.png"| relative_url}})
+
+① Top of Details <br>
+&nbsp;  . Displays the site ID, log occurrence time, log type, and conversion event type. <br>
+&nbsp;  . If the log has any `error`, it displays `error`. <br>
+&nbsp;  . If the log has no errors and only `warnings`, it displays `warning`. <br>
+&nbsp;  . If the log has no `errors` or `warnings`, it displays normal. <br>
+&nbsp;&nbsp;  (If warning and error are mixed, it displays error.)
+
+② Sent Items (General) <br>
+In addition to the items sent by default in logs, conversion logs may include the following additional items. <br>
+&nbsp;  . type: conversion event type <br>
+&nbsp;  . id: ID for the conversion action (order number for purchases) <br>
+&nbsp;  . value: sum of item/product payAmount values (total of individual product payment amounts) <br>
+&nbsp;  . currency: currency
+
+③ Sent Items (items) <br>
+Detailed information about the items that are the target of the conversion action. <br>
+&nbsp;  . id: item ID (product ID) <br>
+&nbsp;  . name: item/product name <br>
+&nbsp;  . payAmount: item/product payment amount <br>
+&nbsp;  . category: item/product category <br>
+&nbsp;  . quantity: item/product quantity <br>
+&nbsp;  . option: item/product option
+
+④ Sent Items (Contributing Ads) <br>
+&nbsp;  . Information about ads that contributed to the current conversion log occurrence. <br>
+&nbsp;  . This information is generated by the system, so no separate action is needed.
+
+⑤ NAVER Ad Cookies <br>
+&nbsp;  . Shows NAVER ad conversion-related cookies accessible from the current page.
+
+⑥ File Download <br>
+&nbsp;  . A feature for downloading the current log information as a file.  <br>
+&nbsp;  . Useful when sharing the current log situation with someone else.
+
+## 3.3. ③ NAVER Ad Cookies
+&nbsp;  . Among the cookies required for NAVER Ads conversion tracking, this shows cookies containing information about contributing ads.  <br>
+&nbsp;  . It shows only information about cookies accessible from the current page, and for each cookie it shows 5 pieces of information: Name, expiration period, Domain, Path, and Value.
+
+## 3.4. ④ NAVER Parameters (NaPm)
+&nbsp;  . Shows the parameter (NaPm) issued by NAVER media for ad conversion tracking. <br>
+&nbsp;  . When an ad is clicked, this information must be maintained until the landing page so that cookies required for ad conversion tracking can be created normally and ad conversion tracking can work.
+
+# 4. FAQ
+
+### FAQ List
+ - [Q1. What does it look like if I insert both the NAVER Ads conversion tracking script and the NAVER Analytics script on the site?](#q1) anchor only <br>
+ - [Q2. How does Assistant display a page where a conversion log occurs and then immediately moves to another page?](#q2) anchor only <br>
+ 
+
+#### Q1
+Q: What does it look like if I insert both the NAVER Ads conversion tracking script and the NAVER Analytics script on the site?
+A: Assistant can show information for both NAVER Ads conversion tracking script logs and NAVER Analytics script logs.  <br>
+If you use a different `site ID` (or NAVER common key) for each of the two services, the generated log information is shown under each `site ID` in the `Page Generated Logs` section.
+
+#### Q2
+Q: How does Assistant display a page where a conversion log occurs and then immediately moves to another page?
+A: Assistant shows logs generated on the current page. When the page changes, the current information disappears and logs generated on the new page are shown.  <br>
+If a conversion log occurs and the page immediately moves to another page, the time during which the conversion log is shown will be very short, so it may be difficult to check the log. <br>
+A feature for keeping log history is not provided.

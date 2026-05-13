@@ -1,0 +1,595 @@
+---
+title: NAVER Ads Conversion Analysis Script Installation Guide (wcs.trans version)
+layout: post
+lesson: 1
+---
+------
+
+
+# 1. Overview
+## 1.1. Target Services and Purpose of This Document
+
+This document provides guidance for the script installed on advertiser sites in order to use NAVER Search Ad (SA) Premium Log Analysis and NAVER Performance Display Ad (GFA) conversion tracking services. 
+
+> ##### WARNING
+> When installing scripts, only one type of script provided by NAVER Ads should be installed.  
+If the script described in this document and an older version of the ad script are installed together, duplicate conversion events may occur. As a result, conversions may also be counted twice in ad reports, so caution is required.
+{: .block-warning }
+
+
+------
+
+# 2. Script Specification
+## 2.1. Overall Script Structure
+
+The general structure of the script is as follows.
+
+```
+
+(1) Import wcslog.js
+(2) Set the identifier for each site (= NAVER common key, na_account_id)
+(3) Set the cookie domain for ad conversion tracking
+(4) Send the PV (page view) event
+(5) Send the conversion event
+
+```
+
+(1), (2), and (3) are parts that must be set commonly on all pages.
+(4) and (5) are event scripts that are added as needed depending on the nature of each screen. (The PV event should basically run on every page.)
+
+For example, if there is a separate payment completion page, the page should generate a PV (page view) event and a payment completion event.
+In pseudo-code, this is as follows. ((4) sends the PV event, and (5) sends the payment completion event.)
+
+```html
+// (1) Import wcslog.js
+<script type="text/javascript" src="//wcs.naver.net/wcslog.js"></script>
+ 
+<script type="text/javascript">
+ 
+if (window.wcs) {
+    if(!wcs_add) var wcs_add = {};
+    // (2) Set the identifier for each site
+    wcs_add["wa"] = "AccountId";      // Site identifier (= NAVER common key, na_account_id)
+ 
+    // (3) Set the cookie domain for ad conversion tracking
+    wcs.inflow("site-domain");
+ 
+    // The script below is the area for sending logs when individual events occur. Because this is a payment completion page, it sends a PV event and a payment completion conversion event.
+ 
+    // (4) Send the PV event
+    wcs_do(); // Send the PV event
+ 
+    // (5) Send the payment completion conversion event
+    var _conv = {}; // Create an object to hold event information
+ 
+    _conv.type = "purchase";  // Set the purchase event on the object
+ 
+    _conv.items = ... // Set detailed content (properties) for the purchase event
+ 
+    wcs.trans(_conv); // Send the object containing event information to the server
+ }
+</script>
+```
+
+
+A general explanation of each numbered area in the script structure above is as follows.
+
+| No. | Description |
+| ---- | ---- |
+| (1) | Import the wcslog.js script, which has methods for event setup, log transmission, and more |
+| (2) | Set the identifier for each site (= NAVER common key, na_account_id) |
+| (3) | Set the cookie domain and save the cookie for storing inflow information for ad conversion tracking |
+| (4) | Send the PV event |
+| (5) | Send the conversion event (additional explanation is provided for possible meta information sent with the event) |
+
+In the next chapter, we explain in detail the information that differs depending on the site, the type of site screen, and the conversion events you want to collect.
+
+------
+## 2.2. Explanation of Each Script Area
+
+The following explains in detail how to install the script for each numbered area in the script structure above.
+
+#### (1) Import wcslog.js
+wcslog.js is a JavaScript library that has methods for collecting various events and sending them to the server. Import this library.
+(If this library is not imported, the script will not work properly.)
+
+#### (2) Set the identifier for each site (= NAVER common key, na_account_id)
+This is the identifier for each site (= NAVER common key, na_account_id). When you apply for conversion analysis in the ad platform, a site identifier is assigned. Enter this value in the `AccountId` part. (It can be checked the day after applying through the Conversion Analysis menu in the ad platform, or in the email sent to the person in charge entered when applying for conversion analysis.)
+
+> ##### TIP
+> How to check the identifier for each site (= NAVER common key, na_account_id)
+> After applying for the log analysis service, the NAVER common key (na_account_id) is issued 1-2 business days later. You can check the issued NAVER common key in the following ways.<br>
+(i) For NAVER Search Ad <br>
+ . In the Search Ad system, go to [Tools > Premium Log Analysis], click the [Overall Service Usage Status] tab, and check the value in the [NAVER Common Key] column.<br>
+(ii) For NAVER Performance Display Ad<br>
+ . In the ad management system, go to [Tools > Conversion Tracking Management], select the site, and check it in the window that shows detailed information.<br>
+(iii) Common method (check by email)<br>
+ . Check the email sent on the next business day after applying for the log analysis service to the email address entered during the application or to the advertiser email address.<br>
+{: .block-tip }
+
+#### (3) Set the cookie domain for ad conversion tracking
+Set the domain for the cookie that stores ad inflow information. In general, enter the top-level domain value.
+For example, if the site is `www.abc-motors.com`, enter `abc-motors.com` in the site-domain part.
+
+> ##### WARNING
+> If your site and another site are separated by subdomain or subpath, enter the host value including the subdomain or subpath in the site-domain part.
+> 
+Example 1) If your site and another site are separated by subdomain. Your site is `aaa.abc.com`, and the other site is `bbb.abc.com`.  
+=> Enter cookie domain: `aaa.abc.com`.
+>
+Example 2) If your site and another site are separated by subpath. Your site is `www.abc.com/aaa`, and the other site is `www.abc.com/bbb`.
+=> Enter cookie domain: `www.abc.com/aaa`.
+{: .block-warning }
+
+#### (4) Send the PV (page view) event
+Sends the PV event to the server. No special configuration is required.
+
+#### (5) Send the conversion event
+This is the area that sends the conversion event.
+There are a total of 24 conversion event types + 10 user-defined custom events.
+Details and usage are explained in the [2.4. Conversion Events] chapter.
+
+-------
+## 2.3. PV (page view) Event
+The PV (page view) event sends information such as the page URL and referrer to the collection server when a page opens. No special settings are required for log transmission.
+To send a PV event, complete the basic settings ((1), (2), (3)) and then run only the `wcs_do()` method.
+
+```html
+// (1) Import wcslog.js
+<script type="text/javascript" src="//wcs.naver.net/wcslog.js"></script>
+ 
+<script type="text/javascript">
+ 
+if (window.wcs) {
+    if(!wcs_add) var wcs_add = {};
+ 
+    // (2) Set the identifier for each site
+    wcs_add["wa"] = "AccountId";      // Site identifier (= NAVER common key, na_account_id)
+ 
+    // (3) Set the cookie domain for ad conversion tracking
+    wcs.inflow("site-domain");
+ 
+    // The script below is the area for sending logs when individual events occur. Because this is a payment completion page, it sends a PV event and a payment completion conversion event.
+ 
+    // (4) Send the PV event
+    wcs_do(); // Send the PV event
+ }
+</script>
+```
+
+Cases where a PV event and conversion event are sent together (for example, a purchase completion page) are explained in the next chapter.
+
+------
+
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+## 2.4. Conversion Events
+
+### 2.4.1. What the Script for Sending a Conversion Event Looks Like
+The complete script for sending one conversion event to the collection server can be shown through the following example.
+
+```js
+// (5) Send conversion event, example: send payment completion event
+ 
+var _conv = {}; // Create an object to hold conversion event information
+ 
+_conv.type = "purchase";  // Set the conversion event type
+ 
+_conv.id = "xxxnn"; // Conversion ID, the ID for the user's action (example: order number). If not available, do not create it or set it to null, '', etc.
+ 
+_conv.items = [       // Describe information about the content and target of the conversion event action
+      {
+            id: "c12354",                    // string product id (required)
+            name: "naverMenShoes123",        // string product name (required)
+            category: "fashion/men/shoes",   // string category
+            quantity: 1,                     // number payment quantity (required)
+            payAmount: 20000,                // number payment amount (required)
+            option: "color:black, size:260" // string option of the product itself (example: color)
+        },
+        {
+            id: "c23456",                    // string product id (required)
+            name: "naverWomenShoes234",      // string product name (required)
+            category: "fashion/women/shoes", // string category
+            quantity: 1,                     // number payment quantity (required)
+            payAmount: 30000,                // number payment amount (required)
+            option: "color:red, size:240"   // string option of the product itself (example: color)
+        }
+]; 
+ 
+_conv.value = "50000";
+ 
+wcs.trans(_conv); // Send the object containing conversion event information to the server
+```
+
+#### Minimum (Required) Specification
+In general, the minimum (required) specification for sending a conversion event is as follows.
+- For purchase (`purchase`), **conversion event code** and **conversion value (`_conv.value`)** are the 2 required specs.
+- For other conversion events, you only need to enter the **conversion event code**.
+
+Minimum required spec example for purchase (`purchase`)
+
+```js
+// (5) Send conversion event, example: send payment completion event
+ 
+var _conv = {}; // Create an object to hold conversion event information
+ 
+_conv.type = "purchase";  // Set the conversion event type
+ 
+_conv.value = "50000";  // If multiple products were purchased in the payment, enter the total amount here
+ 
+wcs.trans(_conv); // Send the object containing conversion event information to the server
+```
+
+Minimum required spec example for conversion events other than purchase (`purchase`)
+```js
+// (5) Send conversion event, example: send application completion event
+ 
+var _conv = {}; // Create an object to hold conversion event information
+ 
+_conv.type = "lead";  // Set the conversion event type
+ 
+wcs.trans(_conv); // Send the object containing conversion event information to the server
+```
+
+----
+#### **※ Minimum (Required) Specification When Using NAVER Dynamic Ad**
+
+If you use the NAVER Dynamic Ad product, the required script specification that must be installed on the site includes more than the items described above.
+
+(a) When using the NAVER Dynamic Ad (NDA) product, all 5 conversion events below must be installed on the site for smooth ad delivery.
+- Purchase completion (`purchase`)
+- Begin checkout (`begin_checkout`)
+- Add to cart (`add_to_cart`)
+- Add product to wishlist/save (`add_to_wishlist`)
+- Product detail view (`view_product`)
+
+> ##### TIP
+> When inserting the scripts for the conversion events above into the site, we recommend implementing them so the script runs when the relevant action is actually completed (for example, when the product is actually added to the cart), rather than when the action starts on the site (for example, when the cart button is clicked).
+> (If it is difficult to implement the script so it runs when the action is actually completed, it is also possible to implement it so the script runs at the start of the action, such as a button click.)
+{: .block-tip }
+
+(b) When installing the conversion events above, the minimum required property for each conversion event is [product ID] (= item.id).  
+(The product ID must be the same as the product ID sent to the NAVER Shopping product EP (Engine Page), the value linked through the id column.)
+
+If you use the NDA ad product, the minimum required specification for the purchase completion (`purchase`) event in code is as follows.
+
+```html
+// (1) Import wcslog.js
+<script type="text/javascript" src="//wcs.naver.net/wcslog.js"></script>
+ 
+<script type="text/javascript">
+ 
+if (window.wcs) {
+    if(!wcs_add) var wcs_add = {};
+ 
+    // (2) Set the identifier for each site
+    wcs_add["wa"] = "AccountId";    // Site identifier (= NAVER common key, na_account_id)
+ 
+    // (3) Set the cookie domain for ad conversion tracking
+    wcs.inflow("site-host");
+ 
+    // The script below is the area for sending logs when individual events occur. Because this is a payment completion page, it sends a PV event and a payment completion conversion event.
+ 
+    // (4) Send the PV event
+    wcs_do(); // Send the PV event
+ 
+    // (5) Send the payment completion conversion event
+ 
+    var _conv = {}; // Create an object to hold event information
+ 
+    _conv.type = "purchase";  // Set the purchase event on the object
+ 
+    _conv.items = [       // Describe information about the content and target of the conversion event action
+          { // item #1
+                id: "7786"                  // string product id (required), must match the product ID sent to the NAVER Shopping product EP
+          },              
+          { // item #2
+                id: "8123"                   // string product id (required), must match the product ID sent to the NAVER Shopping product EP
+          }
+    ];  
+ 
+    _conv.value = "50000"; // Total purchase cost for item #1 and item #2
+ 
+    wcs.trans(_conv); // Send the object containing conversion event information to the server (including item #1 and #2 above)
+}
+
+</script>
+```
+
+For conversion events other than purchase completion (`purchase`), you do not need to enter `_conv.value`.
+
+(c) There is no problem with installing conversion events other than the conversion events above. In this case, there are no required items other than entering the conversion event type code.
+
+### 2.4.2. Conversion Event Types and Property Descriptions
+
+There are 24 conversion event types with predefined uses + 10 user-defined (`custom`) event types without predefined uses.
+
+The names, code names, and meanings of each conversion event are as follows.
+When inserting a conversion event into the script, you must enter the conversion event type code name, not the Korean conversion event name. (Example: for purchase completion, `_conv.type='purchase'`)
+
+| **Conversion Event Name**<img width=100/> | **Conversion Event Type Code Name**<img width=100/> | **Description**<img width=480/>                |
+| -------------------------- | ---------------------------------- | ------------------------------------- |
+| Purchase completion | purchase | Goods/services, etc. were ordered/completed/paid for |
+| Begin checkout | begin_checkout | The user entered the checkout process |
+| Sign-up completion | sign_up | The user completed membership registration |
+| Add to cart | add_to_cart | The user added a product to the cart |
+| Reservation completion | schedule | The user completed a reservation |
+| Store wishlist/save | save_store | The user saved the store/site to favorites, etc. |
+| Product wishlist/save | add_to_wishlist | The user saved goods/services, etc. to a wishlist/favorites, etc. |
+| Inquiry/consultation | inquiry | The user completed submitting inquiry/consultation content |
+| Call | call | The user made a phone call. (Clicked the call button.) |
+| Application completion | lead | The user left contact information and requested consultation, etc. because they became interested in goods/services |
+| Product detail view | view_product | The user viewed the detail page for a specific product |
+| Content view | view_content | The user viewed the detail page for specific content |
+| Search | search | The user searched for a keyword within the site |
+| Share | share | The user shared specific content. (Clicked Share.) |
+| Coupon clip/issue | clip_coupon | The user received/claimed a coupon. |
+| Product/service list view | view_item_list | The user viewed a list of products/services |
+| About us view | about_us | The user viewed a page introducing the company/business. |
+| Service provider view | staff | The user viewed a page introducing people who provide the service |
+| Business location/directions view | location | The user viewed a page introducing the business location or how to get there |
+| Event/promotion application | promotion | The user applied for an event or promotion. |
+| Add communication channel | add_contact_method | The user added a communication channel such as messenger add or SNS follow so they can contact the business more easily. |
+| Marketing opt-in | opt_in_marketing | The customer agreed to let the business send them marketing information |
+| Subscribe | subscribe | The customer agreed to receive information sent regularly by the business. |
+| Write review/rating | review | The user wrote a rating/review for a product/service |
+| User-defined | custom001 through <br>custom010 | Events without predefined use. They can be used freely. <br>There are 10 types. (Example: custom007) |
+
+
+For each conversion event, detailed information about the conversion action or the target of the conversion action (properties) can be sent to the server.
+The detailed information (properties) added to conversion events includes the following.
+
+| **Property Item** | **Subitem** | **Data Type** | **Meaning** | **Example** | **Script Example** |
+| ---- | ---- | ---- | ---- | ---- | ---- |
+| id |  | string | User action ID for the conversion event. (Information generated by the advertiser site) | Order number: 20231220 | _conv.id: \"20231220\" |
+| items(#1) | item.id | string | ID of the goods/services that are the target of the action (example: product ID) | Product number: 7789 | \_conv.items=[<br>  {  <br>    id:\"7786\",|
+|  | item.name <br>(WARNING!) | string | Name of the goods/services that are the target of the action | Product name: Sulwhasoo Firming Cream | name:\"Sulwhasoo Firming Cream\", |
+|  | item.category | string | Category of the goods/services | Category: cosmetics/skincare/cream | category:\"cosmetics/skincare/cream\", |
+|  | item.quantity | number | Quantity of the goods/services | Purchase/payment quantity: 3 units | quantity:3, |
+|  | item.payAmount | number | Amount for the goods/services (total payment amount for the goods/services ID above, not unit price) | Payment amount: 90,000 KRW | payAmount:90000, |
+|  | item.option | string | Option of the goods/services | Capacity: 120 ml | option: \"capacity:120\" <br>  }<br>] |
+| items(#2) | (repeat #1 above) | ... |  |  |  |
+| value |  | string | Total amount for multiple goods/services (excluding shipping is recommended) | Payment amount: 50,000 KRW | _conv.value=\"50000\" |
+
+> ##### WARNING
+> If the value of item.name (product name) contains single/double quotation marks, an error may occur in the script for ad conversion tracking. We strongly recommend removing single/double quotation marks from the item.name value or replacing them with other characters.
+{: .block-warning }
+
+----
+## 2.5. Example Script for Sending Conversion Events, Properties, and PV (page view) Events Together
+The overall script for a page that sends a conversion event, properties, and a PV (page view) event together is as follows. (This example uses a purchase completion page.)
+
+```html
+// (1) Import wcslog.js
+<script type="text/javascript" src="//wcs.naver.net/wcslog.js"></script>
+ 
+<script type="text/javascript">
+if (window.wcs) {
+    if(!wcs_add) var wcs_add = {};
+ 
+    // (2) Set the identifier for each site
+    wcs_add["wa"] = "AccountId";       // Site identifier (= NAVER common key, na_account_id)
+ 
+    // (3) Set the cookie domain for ad conversion tracking
+ 
+    wcs.inflow("site-host");
+ 
+    // The script below is the area for sending logs when individual events occur. Because this is a payment completion page, it sends a PV event and a payment completion conversion event.
+ 
+    // (4) Send the PV event
+    wcs_do(); // Send the PV event
+ 
+    // (5) Send the payment completion conversion event
+ 
+    var _conv = {}; // Create an object to hold conversion event information
+ 
+    _conv.type = "purchase" ; // Set the purchase event on the object
+ 
+    _conv.id = "20231220"; // Number for the payment action for all items below (example: order number)
+ 
+    _conv.items = [       // Describe information about the content and target of the conversion event action
+          { // item #1
+                id: "7786",                    // string product id (required)
+                name: "Sulwhasoo Firming Cream",        // string product name (required)
+                category: "cosmetics/skincare/cream",   // string category
+                quantity: 3,                     // number payment quantity (required)
+                payAmount: 90000,                // number payment amount (required), 30,000 KRW each, 3 units 90,000 KRW
+                option: "capacity:120" // string option of the product itself (example: color)
+           },              
+           { // item #2
+                id: "8123",                    // string product id (required)
+                name: "First Care Activating Serum",        // string product name (required)
+                category: "cosmetics/skincare/essence",   // string category
+                quantity: 2,                     // number payment quantity (required)
+                payAmount: 200000,                // number payment amount (required), 100,000 KRW each, 2 units 200,000 KRW
+                option: "capacity:120" // string option of the product itself (example: color)
+            }
+    ];  
+ 
+    _conv.value = "290000";     // Sum of payment amounts by item
+ 
+    wcs.trans(_conv); // Send the object containing conversion event information to the server (including item #1 and #2 above)
+}
+
+</script>
+```
+
+If PV event and conversion event log transmission occur at different times, load (a) first when the page loads in the scripts (a), (b), and (c) below, and configure (b) and (c) to run at the required timing.
+((b) The script for PV (page view) should basically run on every page whenever the page opens. (c) The script for conversion events is recommended to run when the action is completed. If this is difficult to implement, it can also be implemented to run when the action starts, such as on button click.)
+
+#### # (a) Common Setup Script by Page
+```html
+<script type="text/javascript" src="//wcs.naver.net/wcslog.js"></script>
+ 
+<script type="text/javascript">
+ 
+if (window.wcs) {
+    if(!wcs_add) var wcs_add = {};
+    
+    // (2) Set the identifier for each site
+    wcs_add["wa"] = "AccountId";      // Site identifier (= NAVER common key, na_account_id)
+  
+    // (3) Set the cookie domain for ad conversion tracking
+    wcs.inflow("site-domain");
+ }
+ 
+</script>
+```
+
+
+#### # (b) PV (Page View) Event Transmission Script
+```html
+<script type="text/javascript" src="//wcs.naver.net/wcslog.js"></script>
+
+<script type="text/javascript">
+ 
+ if (window.wcs) {
+    if(!wcs_add) var wcs_add = {};
+     
+    // (2) Set the identifier for each site
+    wcs_add["wa"] = "AccountId";       // Site identifier (= NAVER common key, na_account_id)
+ 
+    // (4) Send the PV event
+    wcs_do(); // Send the PV event
+  }
+ 
+</script>
+```
+
+
+#### # (c) Conversion Event Transmission Script
+```html
+<script type="text/javascript" src="//wcs.naver.net/wcslog.js"></script>
+
+<script type="text/javascript">
+ 
+ if (window.wcs) {
+    if(!wcs_add) var wcs_add = {};
+     
+    // (2) Set the identifier for each site
+    wcs_add["wa"] = "AccountId";     // Site identifier (= NAVER common key, na_account_id)
+ 
+    // (5) Send the payment completion conversion event
+    var _conv = {}; // Create an object to hold event information
+   
+    _conv.type = "purchase";  // Set the purchase event on the object
+    _conv.id = "20231220" // ID for the conversion action (order number is recommended for purchase)
+    _conv.items = [       // Set detailed content (properties) for the purchase event
+          { // item #1
+                id: "7786",                    // string product id (required)
+                name: "Sulwhasoo Firming Cream",        // string product name (required)
+                category: "cosmetics/skincare/cream",   // string category
+                quantity: 3,                     // number payment quantity (required)
+                payAmount: 90000,                // number payment amount (required), 30,000 KRW each, 3 units 90,000 KRW
+                option: "capacity:120" // string option of the product itself (example: color)
+           },              
+           { // item #2
+                id: "8123",                    // string product id (required)
+                name: "First Care Activating Serum",        // string product name (required)
+                category: "cosmetics/skincare/essence",   // string category
+                quantity: 2,                     // number payment quantity (required)
+                payAmount: 200000,                // number payment amount (required), 100,000 KRW each, 2 units 200,000 KRW
+                option: "capacity:120" // string option of the product itself (example: color)
+            }
+    ];  
+    
+    _conv.value = "290000";     // Sum of payment amounts (payAmount) by item       
+
+    wcs.trans(_conv); // Send the object containing conversion event information to the server
+  }
+ 
+</script>
+```
+
+Because (a) and (b) must run on every page of the site, they can be installed together, and (c) can be installed only when a conversion occurs (button click or page open).
+
+In this case, the script block combining (a) and (b) looks as follows.
+
+#### # (a) Common Setup Script by Page + (b) PV (Page View) Event Transmission Script
+
+```html
+<script type="text/javascript" src="//wcs.naver.net/wcslog.js"></script>
+ 
+<script type="text/javascript">
+ 
+if (window.wcs) {
+    if(!wcs_add) var wcs_add = {};
+    
+    // (2) Set the identifier for each site
+    wcs_add["wa"] = "AccountId";      // Site identifier (= NAVER common key, na_account_id)
+  
+    // (3) Set the cookie domain for ad conversion tracking
+    wcs.inflow("site-domain");
+
+    // (4) Send the PV event
+    wcs_do(); // Send the PV event
+ }
+ 
+</script>
+```
+
+# 3. FAQ
+
+## FAQ List
+ - [Q1. (SA, GFA common) Ad conversion tracking is not working. (There are no conversion metrics in the ad report.)](#q1) <br>
+ - [Q2. (SA, GFA common) (Cafe24 hosted mall) The conversion amount is too small compared with the number of conversions.](#q2) <br>
+
+#### Q1
+Q: (SA, GFA common) Ad conversion tracking is not working. (There are no conversion metrics in the ad report.)<br>
+(Similar question 1) I tested a purchase after clicking an ad, but conversion metrics do not appear in the ad report.   
+(Similar question 2) Many ad clicks occurred, but metrics such as average page views per visit and average visit duration (seconds) do not appear.
+
+A: If conversion tracking is not working or conversion metrics do not appear in the ad report, there can be many different causes.
+
+(a) The NaPm parameter was not delivered to the landing page (the NaPm parameter disappeared when the site redirected from the landing page).<br>
+For ad conversion tracking to work properly and for conversion metrics to be provided in ad reports, the NaPm parameter generated when the ad is clicked must be delivered to the final landing page.<br>
+Append the following NaPm parameter to the ad Link_URL and check whether the NaPm parameter is maintained through to the final landing page. <br>
+ <br>
+Example NaPm parameter) NaPm=ct%3Dltfg01cg%7Cci%3D0za0003w4Ivz9giLF1oB%7Ctr%3Dsa%7Chk%3Dd60cbcba879cef5c2d2213ba59dea77a59c267fa <br>
+ <br>
+(b) The ad destination URL (link_url) does not match URL format, or it contains a `#` (anchor). <br>
+For ad conversion tracking to work properly, the ad destination URL (link_url) format must allow the NaPm parameter added by NAVER Ads to operate normally as a URL parameter.<br>
+The following error cases can occur. <br>
+
+(Error Case 1) The ad destination URL (link_url) contains 2 or more `?` characters.<br>
+A URL should contain only one `?`. If it contains 2 or more `?` characters, the URL does not match URL format, and even if the NaPm parameter is appended when the ad is clicked, it will not operate normally. Ad conversion tracking will also not work. <br>
+ <br>
+Incorrect link_url example) http://www.abc.com/index.html?product_id=342&category=32?utm_source=naver_sa&utm_medium=cpc (The URL has 2 `?` characters, so even if a NaPm parameter is appended after this, it will not work normally.) <br>
+ <br>
+(Error Case 2) The ad destination URL (link_url) contains a `#` (anchor).<br>
+If the URL contains a `#` (anchor) for moving to a specific position on the page, many browsers ignore parameters after it even if a NaPm parameter exists there. In this case as well, even if the NaPm parameter is appended when the ad is clicked, it will not operate normally, so ad conversion tracking will also not work.
+ <br>
+Incorrect link_url example) http://www.abc.com/index.html?product_id=342&category=32#event (The URL ends with `#`, so even if a NaPm parameter is appended after this, it will not work normally.) <br>
+ <br>
+(c) The script is not installed correctly.<br>
+If you tested as in (a) above and NaPm is delivered to the final landing page, but there is no conversion value, there may be an issue with the script.<br>
+Please check the script. <br>
+ <br>
+(d) Only conversion types that are not shown in ad reports were installed.<br>
+Among ad conversion types, some are provided in ad reports when an actual conversion occurs, and some are not provided in ad reports.<br>
+Conversion types provided in ad reports:  <br>
+ - 8 predefined conversion types: purchase completion, sign-up, add to cart, application completion, product wishlist, news/follow/subscribe, reservation completion, content view   <br>
+ - Conversion types that users can use arbitrarily: 10 user-defined types from custom #1 through #10 <br>
+ <br>
+For more details about conversion types, see [2.4.2. Conversion Event Types and Property Descriptions](#242-conversion-event-types-and-property-descriptions). <br>
+ <br>
+(e) No actual conversion occurred.<br>
+If none of the issues above applies, the report may have no conversion value because no conversion attributable to an ad actually occurred.<br>
+Even if an action for a specific conversion type occurs on the site, ad reports only provide conversion actions that occur after ad inflow.<br>
+For example, even if you installed a conversion script for purchase (`purchase`), if only purchase/payment occurs without ad inflow, no value is provided in the ad report. <br>
+
+#### Q2
+Q: (SA, GFA common) (Cafe24 hosted mall) The conversion amount is too small compared with the number of conversions. <br>
+(Similar question) The conversion count increased, but the conversion amount is unchanged.
+
+A: When you configure ad conversion tracking in Cafe24, all 4 conversion types (purchase completion, product detail view, add to cart, begin checkout) occur.<br>
+If you select `Conversion` in the Search Ad report's multidimensional report and review the report, you can confirm that add-to-cart conversions are included in addition to purchase completion conversions. This appears to be causing the misunderstanding that the conversion count increased while the conversion amount is unchanged.<br>
+Cafe24 is a platform where the script is installed platform-side, so the probability of errors related to the ad conversion script is very low. Please keep this in mind.<br>
+For Cafe24 conversion tracking, see the guide below.  <br>
+[2.1. Cafe24 Hosted Mall Setup Guide]({{"/pages/02_ecom_platform_guide/#21-cafe24"| relative_url}}) <br>
+ <br>
+ <br>
+ <br>
+Version: 20251027_01

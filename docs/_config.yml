@@ -22,8 +22,8 @@ title: NAVER Ads Conversion Analysis Guide
 description: >- # this means to ignore newlines until "baseurl:"
   conversion script install guide
   wcs.trans
-baseurl: "/english_doc" # the subpath of your site, e.g. /blog
-url: "https://NAVER-ConversionTracking.github.io" # the base hostname & protocol for your site, e.g. http://example.com
+baseurl: "/Naver-Eng-doc" # the subpath of your site, e.g. /blog
+url: "https://Spark-Sharing.github.io/Naver-Eng-doc/ " # the base hostname & protocol for your site, e.g. http://example.com
 github_username: NAVER-ConversionTracking
 
 # Build settings
